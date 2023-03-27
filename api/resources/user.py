@@ -9,7 +9,6 @@ from models.users import User
 class UserList(Resource):
     def get(self):
         users = User.query.all()
-        print(users)
         schema = UserSchema(many=True)
         return {"results": schema.dump(users)}
 
