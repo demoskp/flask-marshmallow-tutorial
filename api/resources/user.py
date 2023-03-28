@@ -3,7 +3,7 @@ from flask_restful import Resource
 
 from api.schemas.user import UserSchema
 from extensions import db
-from models.users import User
+from models import User
 
 
 class UserList(Resource):
@@ -17,7 +17,6 @@ class UserList(Resource):
         validated_data = schema.load(request.json)
 
         user = User(**validated_data)
-
         db.session.add(user)
         db.session.commit()
 
@@ -34,8 +33,9 @@ class UserResource(Resource):
     def put(self, user_id):
         schema = UserSchema(partial=True)
         user = User.query.get_or_404(user_id)
-        schema.load(request.json, instance=user)
+        user = schema.load(request.json, instance=user)
 
+        db.session.add(user)
         db.session.commit()
 
         return {"msg": "User updated", "user": schema.dump(user)}
